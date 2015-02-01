@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "get_tweets.py", line 65, in <module>
+    main()
+  File "get_tweets.py", line 61, in main
+    stream.filter(track=keywords,languages=["en"])
+  File "/Users/bfarris/.virtualenvs/twitter/lib/python2.7/site-packages/tweepy/streaming.py", line 421, in filter
+    self._start(async)
+  File "/Users/bfarris/.virtualenvs/twitter/lib/python2.7/site-packages/tweepy/streaming.py", line 338, in _start
+    self._run()
+  File "/Users/bfarris/.virtualenvs/twitter/lib/python2.7/site-packages/tweepy/streaming.py", line 278, in _run
+    raise exception
+requests.packages.urllib3.exceptions.ProtocolError: ('Connection broken: IncompleteRead(0 bytes read, 512 more expected)', IncompleteRead(0 bytes read, 512 more expected))
