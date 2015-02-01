@@ -1,12 +1,6 @@
 # twitter client
 import tweepy
 
-# database interface
-import sqlite3
-#conn = sqlite3.connect('/data/tweets.db')
-conn = sqlite3.connect('tweets.db')
-curs = conn.cursor()
- 
 class StreamWatcherHandler(tweepy.StreamListener):
     """ Handles all incoming tweets as discrete tweet objects.
     """
@@ -23,11 +17,8 @@ class StreamWatcherHandler(tweepy.StreamListener):
             src = status.source.strip()
             cat = status.created_at
  
-            # Now that we have our tweet information, let's stow it away in our 
-            # sqlite database
-            curs.execute("insert into tweets (tid, username, created_at, lang, content, location, source) values(?, ?, ?, ?, ?, ?, ?)",                  
-                          (tid, usr, cat, lang, txt, location, src))
-            conn.commit()
+	    sep = ',,sep,,'
+	    print tid, sep, usr, sep, lang, sep, txt, sep, location, sep, src, sep, cat
         except Exception as e:
             # Most errors we're going to see relate to the handling of UTF-8 messages (sorry)
             print(e)
@@ -49,16 +40,17 @@ def main():
     #access_token_secret = "ACCESS_TOKEN_SECRET"
     auth1.set_access_token(access_token, access_token_secret)
  
-    #print "Establishing stream...",
-    #stream = tweepy.Stream(auth1, StreamWatcherHandler(), timeout=None)
-    #print "Done"
+    print "Establishing stream...",
+    stream = tweepy.Stream(auth1, StreamWatcherHandler(), timeout=None)
+    print "Done"
  
     # Start pulling our sample streaming API from Twitter to be handled by StreamWatcherHandler
     #stream.sample()
 
     #keywords = ['super','bowl','superbowl','superbowlXLIX','XLIX','katy','perry','sunday','superbowlsunday','boston','patriots','newengland','new england','seattle','seahawks','commercial','commercials','ads','ad','fast furious','kardashian','superbowlcommercials','nfl','carls','deflategate','ballghazi','pizza','wings','beer','avocado','guacamole','mcdonalds','bmw','kia','Priceline','Snickers','SquareSpace','Toyota','T Mobile','nachos','touchdown','football']
+    keywords = ['superbowl']
 
-    #stream.filter(track=keywords,languages=["en"])
+    stream.filter(track=keywords,languages=["en"])
 
     def start_stream():
     	while True:
@@ -67,9 +59,8 @@ def main():
             		print "Establishing stream...",
             		stream = tweepy.Stream(auth1, StreamWatcherHandler(), timeout=None)
             		print "Done"
-            		#keywords = ['super','bowl','superbowl','superbowlXLIX','XLIX','katy','perry','sunday','superbowlsunday','boston','patriots','newengland','new england','seattle','seahawks','commercial','commercials','ads','ad','fast furious','kardashian','superbowlcommercials','nfl','carls','deflategate','ballghazi','pizza','wings','beer','avocado','guacamole','mcdonalds','bmw','kia','Priceline','Snickers','SquareSpace','Toyota','T Mobile','nachos','sb49']
-            		keywords = ['superbowl']
-			stream.filter(track=keywords,languages=["en"])
+            		keywords = ['super','bowl','superbowl','superbowlXLIX','XLIX','katy','perry','sunday','superbowlsunday','boston','patriots','newengland','new england','seattle','seahawks','commercial','commercials','ads','ad','fast furious','kardashian','superbowlcommercials','nfl','carls','deflategate','ballghazi','pizza','wings','beer','avocado','guacamole','mcdonalds','bmw','kia','Priceline','Snickers','SquareSpace','Toyota','T Mobile','nachos','sb49']
+            		stream.filter(track=keywords,languages=["en"])
             
             		#sapi = tweepy.streaming.Stream(auth, CustomStreamListener(api))
             		#sapi.filter(track=["Samsung", "s4", "s5", "note" "3", "HTC", "Sony", "Xperia", "Blackberry", "q5", "q10", "z10", "Nokia", "Lumia", "Nexus", "LG", "Huawei", "Motorola"])
