@@ -56,7 +56,7 @@ def main():
     # Start pulling our sample streaming API from Twitter to be handled by StreamWatcherHandler
     #stream.sample()
 
-    keywords = ['super','bowl','superbowl','superbowlXLIX','XLIX','katy','perry','sunday','superbowlsunday','boston','patriots','newengland','new england','seattle','seahawks','commercial','commercials','ads','ad','fast furious','kardashian','superbowlcommercials','nfl','carls','deflategate','ballghazi','pizza','wings','beer','avocado','guacamole','mcdonalds','bmw','kia','Priceline','Snickers','SquareSpace','Toyota','T Mobile','nachos']
+    keywords = ['super','bowl','superbowl','superbowlXLIX','XLIX','katy','perry','sunday','superbowlsunday','boston','patriots','newengland','new england','seattle','seahawks','commercial','commercials','ads','ad','fast furious','kardashian','superbowlcommercials','nfl','carls','deflategate','ballghazi','pizza','wings','beer','avocado','guacamole','mcdonalds','bmw','kia','Priceline','Snickers','SquareSpace','Toyota','T Mobile','nachos','touchdown','football']
 
     stream.filter(track=keywords,languages=["en"])
 
