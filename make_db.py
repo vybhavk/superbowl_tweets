@@ -1,4 +1,4 @@
-# database interface
+# The Following script creates the database where we will store tweets
 import sqlite3
 conn = sqlite3.connect('tweets.db')
 curs = conn.cursor()
