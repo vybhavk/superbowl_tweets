@@ -148,5 +148,56 @@ team.
 ![png](superbowl_tweets_files/superbowl_tweets_8_1.png)
 
 
+Let's see if we can find "trending" hashtags from the data itself. We are most
+interested in topics which see a sharp rise in tweet counts. We find the 50 most
+popular hashtags, then we count the frequency of each hashtag in ten minute
+intervals. We then consider topics for which the count frequency is very close
+to zero for at least one time interval. This is very useful because it can alert
+us to bursts of interest that we would not have otherwise been aware of.
+
+
+    from collections import Counter
+    hashtags = re.findall('#\w+',' '.join(df.content).lower())
+    counter = Counter(hashtags)
+    hashtag_arr = []
+    count_arr = []
+    KeepNum = 50
+    for hashtag_count in counter.most_common(KeepNum):
+        hashtag_arr.append(hashtag_count[0])
+        count_arr.append(hashtag_count[1])
+
+
+    def trend_measure(df,hashtag):
+        histvals = np.histogram(df[df.content.apply(lambda x: word_in_text(hashtag,x))].hour_offset.values,bins=21)[0]
+        return (histvals.max()-histvals.min())/np.float(histvals.max())
+    
+    trend_measure_array = []
+    for hashtag in hashtag_arr:
+        #hashtag = hashtag_count[0]
+        tm = trend_measure(df,hashtag)
+        trend_measure_array.append(tm)
+
+
+    hashtag_df = pd.DataFrame({ 'hashtag' :hashtag_arr, 'tweet_count':count_arr,"trend_measure":trend_measure_array })
+    trending_hashtag_df = hashtag_df[df2.trend_measure>.999].sort('tweet_count',ascending=False).set_index('hashtag')
+    trending_hashtag_df.drop('trend_measure',axis=1).iloc[0:5].plot(kind='bar',figsize=(8,8))
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x1e34f0650>
+
+
+
+
+![png](superbowl_tweets_files/superbowl_tweets_12_1.png)
+
+
+- \#invisiblemindy refers to a nationwide insurance commercial
+- \#superbowlrally refers to an NFL ad
+- \#reunited refers to britney spears meeting up with Steven Tyler at the game
+- \#spongebobmovie refers to an ad for an upcoming Spongebob movie
+- \#missyelliott refers to her appearance during the halftime show
+
 
     
