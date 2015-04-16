@@ -1,1 +1,3 @@
-tweets.db
+*.db
+ipython_notebooks/.ipynb_checkpoints/
+
