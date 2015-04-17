@@ -8,8 +8,16 @@ from sklearn.cluster import KMeans,DBSCAN
 import seaborn as sns
 import nltk
 
-con = sqlite3.connect("../dbs/tweets_v2.db")
+con = sqlite3.connect("../dbs/tweets.db")
 df = pd.read_sql("SELECT * from tweets", con, parse_dates=['created_at'])
+sunday_12_NYC = pd.to_datetime('2015-02-01 05:00:00',format="%Y-%m-%d %H:%M:%S")
+df['hour_offset'] = (df.created_at - sunday_12_NYC)/np.timedelta64(1,'h')
+print "total number of tweets: ",len(df)
+df = df.loc[(df.hour_offset>18.5)&(df.hour_offset<22.)]
+print "number of tweets during game: ",len(df)
+df['content'] = df.content.str.lower()
+
+
 df['content'] = df.content.str.lower()
 df['content'] = df.content.apply(lambda x: x.replace('katy perry','katyperry'))
 df['content'] = df.content.apply(lambda x: x.replace('missy elliot','missyelliot'))
@@ -102,10 +110,11 @@ plt.title('"touchdown" tweets')
 props = dict(boxstyle='round', facecolor='white', alpha=0.5)
 
 # place a text box in upper left in axes coords
-ax.text(0.05, 0.95, 'dark colors: Seahawks\nlight colors: Patriots', transform=ax.transAxes, fontsize=10,
+ax.text(0.05, 0.95, 'dark colors: Seahawks\nlight colors: Patriots\nyellow lines: true time', transform=ax.transAxes, fontsize=10,
         verticalalignment='top', bbox=props)
 plt.ylim(0,1500)
 plt.savefig("../png/td_cluster_hist.png")
+plt.close()
 
 core_samples_mask = np.zeros_like(db_fg.labels_, dtype=bool)
 core_samples_mask[db_fg.core_sample_indices_] = True
@@ -147,7 +156,7 @@ for k in unique_labels:
 props = dict(boxstyle='round', facecolor='white', alpha=0.5)
 
 # place a text box in upper left in axes coords
-ax.text(0.05, 0.95, 'dark colors: Seahawks\nlight colors: Patriots', transform=ax.transAxes, fontsize=10,
+ax.text(0.05, 0.95, 'dark colors: Seahawks\nlight colors: Patriots\nyellow lines: true time', transform=ax.transAxes, fontsize=10,
         verticalalignment='top', bbox=props)
        
 #plt.legend(handles=[green_patch,blue_patch])
@@ -155,6 +164,7 @@ plt.xlabel('minutes since kickoff')
 plt.title('"field goal" tweets')
 plt.ylim(0,80)
 plt.savefig("../png/fg_cluster_hist.png")
+plt.close()
 
 td_measurements = pd.DataFrame({'calculated time':td_time_calc,'actual time':td_time_actual,'team':td_fan,'time delay':td_time_delay})
 fg_measurements = pd.DataFrame({'calculated time':fg_time_calc,'actual time':fg_time_actual,'team':fg_fan,'time delay':fg_time_delay})
@@ -192,6 +202,7 @@ for i in [0,2,3]:
 plt.legend()
 plt.xlabel('minutes since kickoff')
 plt.savefig("../png/cluster_hist.png")
+plt.close()
 
 basis_vectors = np.array([center / np.linalg.norm(center) for center in km.cluster_centers_])
 projected = basis_vectors.dot(X.toarray().transpose())
@@ -213,3 +224,4 @@ ax.set_ylabel('seahawks/patriots')
 ax.set_zlabel('commercials')
 plt.legend()
 plt.savefig("../png/cluster_3d.png")
+plt.close()

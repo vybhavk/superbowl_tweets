@@ -7,8 +7,13 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 
-con = sqlite3.connect("../dbs/tweets_v2.db")
+con = sqlite3.connect("../dbs/tweets.db")
 df = pd.read_sql("SELECT * from tweets", con, parse_dates=['created_at'])
+sunday_12_NYC = pd.to_datetime('2015-02-01 05:00:00',format="%Y-%m-%d %H:%M:%S")
+df['hour_offset'] = (df.created_at - sunday_12_NYC)/np.timedelta64(1,'h')
+print "total number of tweets: ",len(df)
+df = df.loc[(df.hour_offset>18.5)&(df.hour_offset<22.)]
+print "number of tweets during game: ",len(df)
 df['content'] = df.content.str.lower()
 
 hashtags = re.findall('#\w+',' '.join(df.content).lower())
@@ -39,7 +44,8 @@ for hashtag in hashtag_arr:
 
 hashtag_df = pd.DataFrame({ 'hashtag' :hashtag_arr, 'tweet_count':count_arr,"trend_measure":trend_measure_array })
 trending_hashtag_df = hashtag_df[hashtag_df.trend_measure>.999].sort('tweet_count',ascending=False).set_index('hashtag')
-trending_hashtag_df.drop('trend_measure',axis=1).iloc[0:5].plot(kind='bar',figsize=(8,8))
+trending_hashtag_df.drop('trend_measure',axis=1).iloc[0:5].plot(kind='bar')#,figsize=(6,5))
+plt.tight_layout()
 plt.savefig("../png/trending.png")
 
 #mindy refers to a nationwide insurance commercial

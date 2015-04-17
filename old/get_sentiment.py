@@ -3,8 +3,6 @@ import sqlite3
 import re
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.ndimage.filters import gaussian_filter
-from scipy.signal import argrelextrema
 import seaborn as sns
 from textblob import TextBlob
 

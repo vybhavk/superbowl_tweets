@@ -4,8 +4,13 @@ from bs4 import BeautifulSoup
 import sqlite3
 import numpy as np
 
-con = sqlite3.connect("../dbs/tweets_v2.db")
+con = sqlite3.connect("../dbs/tweets.db")
 df = pd.read_sql("SELECT * from tweets", con, parse_dates=['created_at'])
+sunday_12_NYC = pd.to_datetime('2015-02-01 05:00:00',format="%Y-%m-%d %H:%M:%S")
+df['hour_offset'] = (df.created_at - sunday_12_NYC)/np.timedelta64(1,'h')
+print "total number of tweets: ",len(df)
+df = df.loc[(df.hour_offset>18.5)&(df.hour_offset<22.)]
+print "number of tweets during game: ",len(df)
 df['content'] = df.content.str.lower()
 
 url = "http://simple.wikipedia.org/wiki/List_of_U.S._states_by_population"

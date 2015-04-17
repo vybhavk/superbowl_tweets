@@ -1,3 +1,4 @@
 *.db
+*.swp
 ipython_notebooks/.ipynb_checkpoints/
 
